@@ -73,7 +73,7 @@ printf(const char *fmt, ...)
 	int cnt;
 
 	va_start(ap, fmt);
-	cnt = vcprintf(fmt, ap);
+	cnt = vfprintf(1, fmt, ap);
 	va_end(ap);
 
 	return cnt;
