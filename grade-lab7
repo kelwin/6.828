@@ -67,7 +67,7 @@ def test_primespipe():
     r.user_test("primespipe", stop_on_line("[0-9]{4}$"), timeout=120)
     primes = set(gen_primes(1000))
     nonprimes = set(range(1000)) - primes
-    r.match(*["%d$" % p for p in primes],
-            no=["%d$" % np for np in nonprimes])
+    r.match(no=["%d$" % np for np in nonprimes],
+            *["%d$" % p for p in primes])
 
 run_tests()
