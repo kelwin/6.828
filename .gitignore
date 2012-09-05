@@ -10,3 +10,9 @@
 *.lai
 *.la
 *.a
+
+# Directory
+obj/
+
+# File
+tags
