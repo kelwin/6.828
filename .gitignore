@@ -15,3 +15,5 @@ kernel
 kernelmemfs
 mkfs
 .gdbinit
+jos.in
+jos.out
