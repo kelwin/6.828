@@ -160,8 +160,6 @@ mem_init(void)
 
 	check_page_alloc();
 	check_page();
-	// Remove this line when you're ready to test this function.
-	panic("mem_init: This function is not finished\n");
 
 	//////////////////////////////////////////////////////////////////////
 	// Now we set up virtual memory
@@ -173,6 +171,7 @@ mem_init(void)
 	//      (ie. perm = PTE_U | PTE_P)
 	//    - pages itself -- kernel RW, user NONE
 	// Your code goes here:
+	boot_map_region(kern_pgdir, UPAGES, PTSIZE, PADDR(pages), PTE_U);
 
 	//////////////////////////////////////////////////////////////////////
 	// Use the physical memory that 'bootstack' refers to as the kernel
@@ -185,6 +184,7 @@ mem_init(void)
 	//       overwrite memory.  Known as a "guard page".
 	//     Permissions: kernel RW, user NONE
 	// Your code goes here:
+	boot_map_region(kern_pgdir, KSTACKTOP - KSTKSIZE, KSTKSIZE, PADDR(bootstack), PTE_W);
 
 	//////////////////////////////////////////////////////////////////////
 	// Map all of physical memory at KERNBASE.
@@ -194,6 +194,7 @@ mem_init(void)
 	// we just set up the mapping anyway.
 	// Permissions: kernel RW, user NONE
 	// Your code goes here:
+	boot_map_region(kern_pgdir, KERNBASE, -KERNBASE, 0, PTE_W);
 
 	// Check that the initial page directory has been set up correctly.
 	check_kern_pgdir();
@@ -218,6 +219,8 @@ mem_init(void)
 
 	// Some more checks, only possible after kern_pgdir is installed.
 	check_page_installed_pgdir();
+	// Remove this line when you're ready to test this function.
+	panic("mem_init: This function is not finished\n");
 }
 
 // --------------------------------------------------------------
@@ -383,21 +386,21 @@ static void
 boot_map_region(pde_t *pgdir, uintptr_t va, size_t size, physaddr_t pa, int perm)
 {
 	// Fill this function in
-	char *a, *last;
 	pte_t *pte;
 
-	assert(!size % PGSIZE);
+	assert(!(va % PGSIZE));
+	assert(!(size % PGSIZE));
+	assert(!(pa % PGSIZE));
 
-	a = (char *)ROUNDDOWN(va, PGSIZE);
-	last = (char *)(va + size);
-
-	for (a <= last; a += PGSIZE, pa += PGSIZE;) {
-		pte = pgdir_walk(pgdir, a, 1);
+	for (; size > 0; size -= PGSIZE) {
+		pte = pgdir_walk(pgdir, (char *)va, 1);
 		if (!pte)
 			panic("boot_map_region: pgdir_walk failed");
 		if (*pte & PTE_P)
 			panic("boot_map_region: pte remap");
 		*pte = pa | perm | PTE_P;
+		va += PGSIZE;
+		pa += PGSIZE;
 	}
 
 }
