@@ -152,6 +152,7 @@ mem_init(void)
 	//////////////////////////////////////////////////////////////////////
 	// Make 'envs' point to an array of size 'NENV' of 'struct Env'.
 	// LAB 3: Your code here.
+	envs = (struct Env *)boot_alloc(NENV * sizeof(struct Env));
 
 	//////////////////////////////////////////////////////////////////////
 	// Now that we've allocated the initial kernel data structures, we set
@@ -185,6 +186,7 @@ mem_init(void)
 	//    - the new image at UENVS  -- kernel R, user R
 	//    - envs itself -- kernel RW, user NONE
 	// LAB 3: Your code here.
+	boot_map_region(kern_pgdir, UENVS, PTSIZE, PADDR(envs), PTE_U);
 
 	//////////////////////////////////////////////////////////////////////
 	// Use the physical memory that 'bootstack' refers to as the kernel
@@ -233,7 +235,7 @@ mem_init(void)
 	// Some more checks, only possible after kern_pgdir is installed.
 	check_page_installed_pgdir();
 	// Remove this line when you're ready to test this function.
-	panic("mem_init: This function is not finished\n");
+	// panic("mem_init: This function is not finished\n");
 }
 
 // --------------------------------------------------------------
@@ -376,7 +378,7 @@ pgdir_walk(pde_t *pgdir, const void *va, int create)
 	else {
 		if (!create)
 			return 0;
-		if ((pp = page_alloc(1)) == 0)
+		if ((pp = page_alloc(ALLOC_ZERO)) == 0)
 			return 0;
 		pp->pp_ref = 1;
 		pgtab = (pte_t *)KADDR(page2pa(pp));
