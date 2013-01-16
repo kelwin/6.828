@@ -65,6 +65,84 @@ trap_init(void)
 	extern struct Segdesc gdt[];
 
 	// LAB 3: Your code here.
+    extern void __idt_divide();
+    extern void __idt_debug();
+    extern void __idt_nmi();
+    extern void __idt_breakpoint();
+    extern void __idt_overflow();
+    extern void __idt_bound();
+    extern void __idt_illop();
+    extern void __idt_device();
+    extern void __idt_dblflt();
+    extern void __idt_tss();
+    extern void __idt_segnp();
+    extern void __idt_stack();
+    extern void __idt_gpflt();
+    extern void __idt_pgflt();
+    extern void __idt_fperr();
+    extern void __idt_align();
+    extern void __idt_mchk();
+    extern void __idt_simd();
+    extern void __idt_syscall();
+    extern void __idt_default();
+
+    extern void __idt_irq0();
+    extern void __idt_irq1();
+    extern void __idt_irq2();
+    extern void __idt_irq3();
+    extern void __idt_irq4();
+    extern void __idt_irq5();
+    extern void __idt_irq6();
+    extern void __idt_irq7();
+    extern void __idt_irq8();
+    extern void __idt_irq9();
+    extern void __idt_irq10();
+    extern void __idt_irq11();
+    extern void __idt_irq12();
+    extern void __idt_irq13();
+    extern void __idt_irq14();
+
+    int i = 0;
+    SETGATE(idt[0], 0, GD_KT, __idt_default, 0);
+    for (i = 1; i < 255; ++i) {
+        idt[i] = idt[0];
+    }
+
+    SETGATE(idt[T_DIVIDE], 1, GD_KT, __idt_divide, 0);
+    SETGATE(idt[T_DEBUG], 1, GD_KT, __idt_debug, 0);
+    SETGATE(idt[T_NMI], 0, GD_KT, __idt_nmi, 0);
+    SETGATE(idt[T_BRKPT], 1, GD_KT, __idt_breakpoint, 3);
+    SETGATE(idt[T_OFLOW], 1, GD_KT, __idt_overflow, 0);
+    SETGATE(idt[T_BOUND], 1, GD_KT, __idt_bound, 0);
+    SETGATE(idt[T_ILLOP], 1, GD_KT, __idt_illop, 0);
+    SETGATE(idt[T_DEVICE], 1, GD_KT, __idt_device, 0);
+    SETGATE(idt[T_DBLFLT], 1, GD_KT, __idt_dblflt, 0);
+    SETGATE(idt[T_TSS], 1, GD_KT, __idt_tss, 0);
+    SETGATE(idt[T_SEGNP], 1, GD_KT, __idt_segnp, 0);
+    SETGATE(idt[T_STACK], 1, GD_KT, __idt_stack, 0);
+    SETGATE(idt[T_GPFLT], 1, GD_KT, __idt_gpflt, 0);
+    SETGATE(idt[T_PGFLT], 1, GD_KT, __idt_pgflt, 0);
+    SETGATE(idt[T_FPERR], 1, GD_KT, __idt_fperr, 0);
+    SETGATE(idt[T_ALIGN], 1, GD_KT, __idt_align, 0);
+    SETGATE(idt[T_MCHK], 1, GD_KT, __idt_mchk, 0);
+    SETGATE(idt[T_SIMDERR], 1, GD_KT, __idt_simd, 0);
+    SETGATE(idt[T_SYSCALL], 0, GD_KT, __idt_syscall, 3);
+
+    SETGATE(idt[IRQ_OFFSET], 0, GD_KT, __idt_irq0, 0);
+    SETGATE(idt[IRQ_OFFSET + 1], 0, GD_KT, __idt_irq1, 0);
+    SETGATE(idt[IRQ_OFFSET + 2], 0, GD_KT, __idt_irq2, 0);
+    SETGATE(idt[IRQ_OFFSET + 3], 0, GD_KT, __idt_irq3, 0);
+    SETGATE(idt[IRQ_OFFSET + 4], 0, GD_KT, __idt_irq4, 0);
+    SETGATE(idt[IRQ_OFFSET + 5], 0, GD_KT, __idt_irq5, 0);
+    SETGATE(idt[IRQ_OFFSET + 6], 0, GD_KT, __idt_irq6, 0);
+    SETGATE(idt[IRQ_OFFSET + 7], 0, GD_KT, __idt_irq7, 0);
+    SETGATE(idt[IRQ_OFFSET + 8], 0, GD_KT, __idt_irq8, 0);
+    SETGATE(idt[IRQ_OFFSET + 9], 0, GD_KT, __idt_irq9, 0);
+    SETGATE(idt[IRQ_OFFSET + 10], 0, GD_KT, __idt_irq10, 0);
+    SETGATE(idt[IRQ_OFFSET + 11], 0, GD_KT, __idt_irq11, 0);
+    SETGATE(idt[IRQ_OFFSET + 12], 0, GD_KT, __idt_irq12, 0);
+    SETGATE(idt[IRQ_OFFSET + 13], 0, GD_KT, __idt_irq13, 0);
+    SETGATE(idt[IRQ_OFFSET + 14], 0, GD_KT, __idt_irq14, 0);
 
 	// Per-CPU setup 
 	trap_init_percpu();

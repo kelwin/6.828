@@ -1,4 +1,4 @@
-verbose=false
+verbose=true
 
 if [ "x$1" = "x-v" ]
 then
@@ -64,7 +64,7 @@ run () {
 			echo "br *0x$brkaddr"
 			echo c
 		) > jos.in
-		gdb -batch -nx -x jos.in > /dev/null 2>&1
+		i386-jos-elf-gdb -batch -nx -x jos.in 
 
 		# Make sure QEMU is dead.  On OS X, exiting gdb
 		# doesn't always exit QEMU.
